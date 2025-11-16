@@ -1,0 +1,236 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.title-cover {
+  margin-top: 30px; /* creates space above the whole cover section */
+}
+
+body {
+  font-family: sans-serif;
+background-image: url('images/image.png');
+  color: #fff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;  /* fills the full screen height */
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top); /* fixes iPhone notch + top crop */
+}
+
+/* === MAIN CONTAINER === */
+.music-container {
+  /*margin-top: 20px;  adjust value as needed */
+  display: flex;
+  flex-direction: column; /* stacks elements for mobile */
+  justify-content: center;
+  align-items: center;
+  width: 85%;
+  max-width: 440px;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* === PLAYER CARD === */
+.player {
+  width: 100%;
+  background: linear-gradient(to bottom, #8a6441eb, #804614);
+  padding: 1.5rem;
+  border-radius: 0px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+/* === NOW PLAYING SECTION === */
+.now-playing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.now-playing img {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0.8rem;
+}
+
+.now-playing h2 {
+  margin: 5px 0 2px;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+}
+
+.now-playing p {
+  margin: 0;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  color: #bbb;
+}
+
+/* === SEEK BAR === */
+#seek-bar {
+  width: 100%;
+  margin: 12px 0;
+  -webkit-appearance: none;
+  height: 5px;
+  background: #555;
+  border-radius: 5px;
+  outline: none;
+}
+
+#seek-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: rgb(255, 255, 255);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* === TIME INFO === */
+.time-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+/* === CONTROLS SECTION === */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 10px 0 16px;
+}
+
+.controls button,
+.icon-btn {
+  background: transparent;   /* no solid background */
+  border: none;
+  color: white;              /* icons/text stay visible */
+  cursor: pointer;
+  transition: transform 0.08s;  /* optional hover/press effect */
+  padding: 10px;
+  border-radius: 100px;
+}
+
+
+/* Make SVG icons bigger without changing button size */
+.icon-btn svg {
+  width: 23px;
+  height: 23px;
+  display: block;
+}
+
+#prev svg {
+  transform: scaleX(-1);
+}
+
+#shuffle svg {
+  width: 29px;
+  height: 29px;
+}
+
+
+#repeat svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* Make the Play/Pause button bigger */
+#play svg {
+  width: 70px;
+  height: 70px;
+}
+
+#play {
+  padding: 15px; /* a bit more space around the bigger icon */
+}
+#play {
+  /*background: #3b6842;*/
+  border-radius: 50%;
+  transition: transform 0.15s ease, background 0.2s;
+}
+
+#play:hover {
+  /*background: #4caf50;*/
+  transform: scale(1.1);
+}
+
+#play:active {
+  transform: scale(1.05);
+}
+
+
+/* Hover + press effects for non-active buttons */
+.icon-btn:hover:not(.mode-active),
+.controls button:hover:not(.mode-active) {
+  transform: translateY(-2px);
+}
+
+.icon-btn:active:not(.mode-active),
+.controls button:active:not(.mode-active) {
+  transform: translateY(0);
+}
+
+/* Active mode (shuffle/repeat) buttons */
+.icon-btn.mode-active,
+.controls button.mode-active {
+  background: #49f56600;           
+  color: #49f566;               /*color of the button changes but not the bakcground*/
+  font-weight: bold;
+}
+
+/* Optional: maintain press transform for active buttons */
+.icon-btn.mode-active:active,
+.controls button.mode-active:active {
+  transform: translateY(0);
+}
+
+
+/* === SEARCH BAR & PLAYLIST === */
+#search-bar {
+  display: none;
+}
+
+#playlist {
+  display: none;
+}
+
+/* === SCROLLBAR STYLING === */
+#playlist::-webkit-scrollbar {
+  width: 6px;
+}
+#playlist::-webkit-scrollbar-thumb {
+  background-color: #666;
+  border-radius: 3px;
+}
+
+/* === RESPONSIVE TWEAKS === */
+@media (min-width: 600px) {
+  .music-container {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 24px;
+    max-width: 900px;
+  }
+
+  .player {
+    flex: 1;
+  }
+
+  #playlist {
+    max-height: 70vh;
+    flex: 1;
+  }
+}
