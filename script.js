@@ -1,81 +1,51 @@
 const playlist = [
   {
-    title: "Buscale",
-    artist: "Óscar Medina",
-    src: "songs/Buscale.mp3",
-    cover: "images/Buscale.jpg"
-  },
-    {
-    title: "Increíble (feat.Evan Craft)",
-    artist: "Miel San Marcos/Evan Craft",
-    src: "songs/SpotiDownloader.com - Increíble (feat. Evan Craft) - Miel San Marcos.mp3",
-    cover: "images/Cover of Increíble (feat. Evan Craft) by Miel San Marcos, Evan Craft.jpg"
+    title: "Oh Alma Mía",
+    artist: "Los Voceros de Cristo",
+    src: "songs/a5.mp3",
+    cover: "images/a5.png"
   },
   {
-    title: "Todo Lo Has Cambiado",
-    artist: "Danilo Montero",
-    src: "songs/SpotiDownloader.com - Todo Lo Has Cambiado - Danilo Montero.mp3",
-    cover: "images/Cover of Todo Lo Has Cambiado by Danilo Montero, Su Presencia, Thalles Roberto, Victoria Montero.jpg"
+    title: "Cristo por su Iglesia viene",
+    artist: "Los Voceros de Cristo",
+    src: "songs/Cristo.mp3",
+    cover: "images/Cristo.jpg"
   },
   {
-    title: "Cuando Yo Te Conocí",
-    artist: "Alex Zurdo",
-    src: "songs/SpotiDownloader.com - Cuando Yo Te Conocí - Alex Zurdo.mp3",
-    cover: "images/Cover of Cuando Yo Te Conocí by Alex Zurdo, AZ Family.jpg"
+    title: "Loor a ti mi Dios",
+    artist: "Los Voceros de Cristo",
+    src: "songs/Loor.mp3",
+    cover: "images/Loor.jpg"
   },
   {
-    title: "Como Una Flor (Versión Los Hermanos Reyes)",
-    artist: "Hermanos Osorio, Los Hermanos Reyes de Guatemala",
-    src: "songs/Como Una Flor (Versión Los Hermanos Reyes).mp3",
-    cover: "images/Como Una Flor (Versión Los Hermanos Reyes).png"
+    title: "Escogido fui de Dios",
+    artist: "Los Voceros de Cristo",
+    src: "songs/song11.mp3",
+    cover: "images/song11.png"
   },
   {
-    title: "Empezar de Nuevo",
-    artist: "Kike Pavón/Funky",
-    src: "songs/Empezar.mp3",
-    cover: "images/kiki.png"
+    title: "Loor a ti mi Dios v2",
+    artist: "Los Voceros de Cristo",
+    src: "songs/Loor2.mp3",
+    cover: "images/a5.png"
   },
   {
-    title: "Mas Rico Del Mundo",
-    artist: "Evan Craft",
-    src: "songs/Más_Rico_Del_Mundo.mp3",
-    cover: "images/Más_Rico_Del_Mundo.png"
+    title: "Jesús es mi Refugio",
+    artist: "Los Voceros de Cristo",
+    src: "songs/Refugio.mp3",
+    cover: "images/new3.png"
   },
   {
-    title: "Be Alright",
-    artist: "Evan Craft",
-    src: "songs/Be Alright.mp3",
-    cover: "images/evan.png"
+    title: "Mi cántaro vacío",
+    artist: "Los Voceros de Cristo",
+    src: "songs/cántaro.mp3",
+    cover: "images/a5.png"
   },
   {
-    title: "Desesperado",
-    artist: "Evan Craft",
-    src: "songs/Desesperado.mp3",
-    cover: "images/evan.png"
-  },
-  {
-    title: "INFINITO",
-    artist: "Madiel Lara",
-    src: "songs/SpotiDownloader.com - INFINITO - Madiel Lara.mp3",
-    cover: "images/Cover of INFINITO by Madiel Lara.jpg"
-  },
-  {
-    title: "Vida Encontré",
-    artist: "Majo y Dan",
-    src: "songs/song13.mp3",
-    cover: "images/song13.png"
-  },
-  {
-    title: "Jesús Pt. 2",
-    artist: "LEAD/Musiko",
-    src: "songs/Pt 2.mp3",
-    cover: "images/image (2).png"
-  },
-  {
-    title: "Espíritu Santo",
-    artist: "Redimi2/Barak",
-    src: "songs/Espíritu.mp3",
-    cover: "images/image (6).png"
+    title: "El volverá",
+    artist: "Los Voceros de Cristo/Aníbal Marroquín",
+    src: "songs/volverá.mp3",
+    cover: "images/new4.png"
   },
 ];
 
