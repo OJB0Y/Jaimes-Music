@@ -56,6 +56,7 @@ const title = document.getElementById('title');
 const artist = document.getElementById('artist');
 const cover = document.getElementById('cover');
 const playlistEl = document.getElementById('playlist');
+const body = document.getElementById("body");
 
 const playBtn = document.getElementById('play');
 const playIcon = document.getElementById('play-icon');
@@ -74,11 +75,76 @@ const searchBar = document.getElementById('search-bar');
 let currentSong = 0;
 let isPlaying = false;
 let repeat = false;
-let shuffle = false;
+let shuffle = true;
 
 // shuffle queue + position
 let shuffleQueue = [];
 let shuffleIndex = -1;
+
+//vibrant node
+const colorCache = {};
+
+async function getSongColors(imageUrl) {
+  if (colorCache[imageUrl]) return colorCache[imageUrl];
+
+  try {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = imageUrl;
+
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+    });
+
+    const vibrant = new Vibrant(img);
+    const palette = await vibrant.getPalette();
+
+    // Helper function to check if a color is too dark (close to black)
+    function isTooDark(hexColor) {
+      // Convert hex to RGB
+      const r = parseInt(hexColor.slice(1, 3), 16);
+      const g = parseInt(hexColor.slice(3, 5), 16);
+      const b = parseInt(hexColor.slice(5, 7), 16);
+      
+      // Calculate perceived brightness (standard formula)
+      const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+      
+      // If brightness is below 30 (out of 255), it's too dark
+      return brightness < 30;
+    }
+    
+    // Get the colors from palette
+    let darkColor = palette.DarkVibrant?.getHex() || "#121212";
+    const vibrantColor = palette.Vibrant?.getHex() || "#121212";
+    const lightColor = palette.LightVibrant?.getHex() || "#121212";
+    const muted = palette.Muted?.getHex() || "#121212";
+    const lightMuted = palette.LightMuted?.getHex() || "#121212";
+    
+    // If DarkVibrant is too dark (close to black), fall back to Vibrant
+    if (isTooDark(darkColor)) {
+      darkColor = muted;
+    }
+
+    const colors = {
+      main: darkColor,
+      dark: darkColor,
+      light: lightColor,
+      vibrant: vibrantColor
+    };
+
+    colorCache[imageUrl] = colors;
+    return colors;
+
+  } catch (err) {
+    console.error('Error extracting colors:', err);
+    return {
+      main: "#121212",
+      dark: "#121212",
+      light: "#ffffff"
+    };
+  }
+}
 
 // --- shuffle helpers ---
 function createShuffleQueue(startIndex = currentSong) {
@@ -114,6 +180,10 @@ function getPrevShuffleSong() {
   return currentSong; // stay if no prev
 }
 
+function updatePlaylistGradient(main, dark) {
+  document.body.style.background = `${main}`;
+}
+
 // --- load & play ---
 function loadSong(index) {
   const song = playlist[index];
@@ -122,11 +192,35 @@ function loadSong(index) {
   artist.textContent = song.artist;
   cover.src = song.cover;
   updateActiveSong();
+  getSongColors(song.cover).then(colors => {
+  updatePlaylistGradient(colors.dark);
+});
+
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: song.title,
+    artist: song.artist,
+    artwork: [
+      { src: song.cover, sizes: '96x96', type: 'image/jpeg' },
+      { src: song.cover, sizes: '128x128', type: 'image/jpeg' },
+      { src: song.cover, sizes: '192x192', type: 'image/jpeg' },
+      { src: song.cover, sizes: '256x256', type: 'image/jpeg' },
+      { src: song.cover, sizes: '384x384', type: 'image/jpeg' },
+      { src: song.cover, sizes: '512x512', type: 'image/jpeg' }
+    ]
+  });
+
+  // Enable playback controls on lock screen
+  navigator.mediaSession.setActionHandler('play', () => audio.play());
+  navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+  navigator.mediaSession.setActionHandler('previoustrack', () => prevBtn.click());
+  navigator.mediaSession.setActionHandler('nexttrack', () => nextBtn.click());
+}
 }
 
-function playSong(index) {
+function playSong(index, direction = "next") {
   currentSong = index;
-  loadSong(index);
+  loadSong(index, direction);
   audio.play().catch(err => console.warn('Play prevented:', err));
 }
 
@@ -188,9 +282,23 @@ function formatTime(seconds) {
 
 // --- audio events ---
 audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  
+  const progress = (audio.currentTime / audio.duration) * 100 || 0;
+
+  seekBar.value = progress;
+
+  seekBar.style.background = `linear-gradient(
+    to right,
+    white 0%,
+    white ${progress}%,
+    #818181b9 ${progress}%,
+    #818181b9 100%
+  )`;
+
   seekBar.value = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
   currentTimeEl.textContent = formatTime(audio.currentTime);
-  durationEl.textContent = `/ ${formatTime(audio.duration || 0)}`;
+  durationEl.textContent = `- ${formatTime(audio.duration || 0)}`;
 });
 
 seekBar.addEventListener('input', () => {
@@ -234,6 +342,7 @@ nextBtn.addEventListener('click', () => {
     currentSong = (currentSong + 1) % playlist.length;
   }
   playSong(currentSong);
+  changeSong(nextIndex);
 });
 
 prevBtn.addEventListener('click', () => {
@@ -243,8 +352,12 @@ prevBtn.addEventListener('click', () => {
     currentSong = (currentSong - 1 + playlist.length) % playlist.length;
   }
   playSong(currentSong);
+  changeSong(prevIndex, { animate: true, direction: "prev" });
 });
 
+function changeSong(index, { animate = true, direction = "next", autoPlay = true } = {}) {
+  animateCoverChange(song.cover, direction);
+}
 
 // --- repeat & shuffle toggles ---
 function setToggleButtonState(button, enabled) {
@@ -281,8 +394,42 @@ function setPlayIcon(isNowPlaying) {
     : `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM10.6935 15.8458L15.4137 13.059C16.1954 12.5974 16.1954 11.4026 15.4137 10.941L10.6935 8.15419C9.93371 7.70561 9 8.28947 9 9.21316V14.7868C9 15.7105 9.93371 16.2944 10.6935 15.8458Z" fill="#ffffff"></path> </g></svg>`;
 }
 
+function animateCoverChange(newCoverSrc, direction = "next", callback) {
+  const cover = document.getElementById("cover");
+  const slideOutClass = direction === "next" ? "slide-out-left" : "slide-out-right";
+  const slideInClass = direction === "next" ? "slide-in-right" : "slide-in-left";
+
+  // 1. Slide OLD cover out
+  cover.classList.add(slideOutClass);
+
+  setTimeout(() => {
+    // 2. Freeze transitions and move off-screen opposite side
+    cover.classList.add("no-transition");
+    cover.classList.remove(slideOutClass);
+
+    // 3. Change the image while off-screen
+    cover.src = newCoverSrc;
+
+    // 4. Position new image off-screen on the opposite side
+    cover.classList.add(slideInClass);
+
+    // Force browser to commit layout
+    cover.getBoundingClientRect();
+
+    // 5. Re-enable transition and slide in
+    requestAnimationFrame(() => {
+      cover.classList.remove("no-transition");
+      cover.classList.remove(slideInClass);
+
+      // 6. Call callback after slide-in finishes
+      if (callback) callback();
+    });
+
+  }, 550); // match CSS slide-out duration
+}
+
 // --- init ---
-currentSong = 0;
+currentSong = Math.floor(Math.random() * playlist.length);
 loadSong(currentSong);
 updateActiveSong();
 setPlayIcon(false);
