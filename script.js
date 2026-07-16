@@ -46,7 +46,13 @@ const playlist = [
     artist: "Los Voceros de Cristo/Aníbal Marroquín",
     src: "songs/volverá.mp3",
     cover: "images/new4.png"
-  },
+  },/*
+  {
+    title: "",
+    artist: "",
+    src: "",
+    cover: ""
+  },*/
 ];
 
 // --- element refs ---

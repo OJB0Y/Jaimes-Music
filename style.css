@@ -82,15 +82,19 @@ body {
 }
 
 .now-playing img {
+  position: relative;
   width: 100%;
   max-width: 340px;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 0.8rem;
+  margin-bottom: 2rem;
+  transform: translateY(10px);
 }
 
 .now-playing h2 {
+  position: relative;
+  margin-bottom: 1.4rem;
   margin: 5px 0 2px;
   font-size: clamp(1.2rem, 4vw, 1.6rem);
   color: white;
@@ -118,7 +122,6 @@ body {
 #seek-bar::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  opacity: 1;
   background: transparent;
   color: transparent;
   opacity: 0;
@@ -176,7 +179,7 @@ body {
 }
 
 #shuffle svg {
-  display: none;
+  opacity: 1;
   width: 29px;
   height: 29px;
 }
